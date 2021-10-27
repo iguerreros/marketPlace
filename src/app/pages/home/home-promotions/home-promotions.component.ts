@@ -1,24 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from 'src/app/services/product.service';
-import { OwlCarouselConfig,BackgroundImage } from '../../../functions';
 import { Path } from '../../../config';
 @Component({
-  selector: 'app-home-banner',
-  templateUrl: './home-banner.component.html',
-  styleUrls: ['./home-banner.component.css']
+  selector: 'app-home-promotions',
+  templateUrl: './home-promotions.component.html'
 })
-export class HomeBannerComponent implements OnInit {
+export class HomePromotionsComponent implements OnInit {
   path:String = Path.url;	
-	banner_home:Array<any> = [];
-	category:Array<any> = [];
+  banner_default:Array<any> = [];
+  category:Array<any> = [];
 	url:Array<any> = [];
-
-  //VARIABLES PARA EJECUTAR EN SEGUNDO PLANO
-	render:Boolean = true;
 	preload:Boolean = false;
-  constructor(private serviceproducto: ProductsService) {}
+  constructor(private serviceproducto: ProductsService) { }
 
   ngOnInit(): void {
+
     let index;
     this.preload = true;
     this.serviceproducto.getData().subscribe((response: any) =>{
@@ -37,14 +33,14 @@ export class HomeBannerComponent implements OnInit {
             Generar un numero aleatorio
         ============================================*/
 
-         if(size > 5){
-           index = Math.floor(Math.random() * (size-5))
+         if(size > 2){
+           index = Math.floor(Math.random() * (size-2))
          }
-         this.serviceproducto.getlimitData(Object.keys(response)[index],5).subscribe( resp =>{
+         this.serviceproducto.getlimitData(Object.keys(response)[index],2).subscribe( resp =>{
   
           let i ;
           for(i in resp){
-            this.banner_home.push(JSON.parse(resp[i].horizontal_slider))
+            this.banner_default.push(resp[i].default_banner)
             this.category.push(resp[i].category)
             this.url.push(resp[i].url)
   
@@ -53,26 +49,7 @@ export class HomeBannerComponent implements OnInit {
          
        })
         
-
-
     })
   }
-
-  /*=============================================
-	Función que nos avisa cuando finaliza el renderizado de Angular
-	=============================================*/
-	
-	callback(){
-
-		if(this.render){
-
-			this.render = false;
-
-			OwlCarouselConfig.fnc();
-      BackgroundImage.fnc();
-
-		}
-
-	}
 
 }
